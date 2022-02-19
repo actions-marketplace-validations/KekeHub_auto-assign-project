@@ -1,0 +1,40 @@
+name: "assign-org-project"
+description: "Assigned issue or pull request to a organization project"
+author: "KekeHub"
+inputs:
+  app-installation-id:
+    required: false
+    description: "GitHub App installation ID"
+
+  app-integration-id:
+    required: false
+    description: "GitHub App integration ID a.k.a app ID"
+
+  app-private-key:
+    required: false
+    description: "GitHub App private key"
+
+  issue-id:
+    required: false
+    description: "ID of the issue or the pull request"
+    default: ${{ github.event.issue.node_id || github.event.pull_request.node_id }}
+
+  owner:
+    required: false
+    description: "Owner (organization ID) of the project owner"
+    default: ${{ github.repository_owner }}
+
+  project-id:
+    required: true
+    description: "The ID of the organization ID"
+
+  token:
+    required: false
+    description: "Credential to access to the repo to post the comment"
+    default: ${{ github.token }}
+runs:
+  using: "node12"
+  main: "dist/index.js"
+branding:
+  icon: "archive"
+  color: "orange"
