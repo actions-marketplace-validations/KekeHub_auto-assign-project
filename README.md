@@ -95,9 +95,14 @@ If any of these arguments are missing, the `${{ secrets.GITHUB_TOKEN }}` will ge
 
 ## Outputs
 
-| NAME              | DESCRIPTION                                                                                                                  | TYPE     |
-|-------------------|------------------------------------------------------------------------------------------------------------------------------|----------|
-| `project-item-id` | ID of the item (issue or pull request) that was added to the project. Useful for later use if you want to update the fields. | `string` |
+| NAME              | DESCRIPTION                                                                                                                                                                                                                                                | TYPE     |
+|-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `project-item-id` | ID of the item (issue or pull request) that was added to the project. Useful for later use if you want to update the fields. You can use [KekeHub/update-project-item-fields](https://github.com/KekeHub/update-project-item-fields) to update the fields. | `string` |
+
+## Related Actions
+
+* [KekeHub/update-project-item-fields](https://github.com/KekeHub/update-project-item-fields)
+  * GitHub Action to update project item fields
 
 ## License
 
