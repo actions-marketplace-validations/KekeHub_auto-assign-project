@@ -91,7 +91,7 @@ If any of these arguments are missing, the `${{ secrets.GITHUB_TOKEN }}` will ge
 | `issue-id`            | ID  of the issue.                                                                      | `string` | `true`   | `${{ github.event.issue.node_id }}` or `${{ github.event.pull_request.node_id }}` |
 | `owner`               | Organization or the user e.g. `KekeHub`                                                | `string` | `false`  | The workflows GitHub organization                                                 |
 | `token`               | A GitHub token. If GitHub App arguments are configured, this argument will be ignored. | `string` | `false`  | `${{ github.token }}`                                                             |
-| `project-id`          | ID of the project. e.g.) `1`                                                           | `number` | `true`   |                                                                                   |
+| `project-id`          | ID (Number) of the project. e.g.) `1`                                                  | `number` | `true`   |                                                                                   |
 
 ## Outputs
 
