@@ -63,7 +63,10 @@ export class Assiger {
     return addProjectNextItem.projectNextItem.id
   }
 
-  private async getProjectId(owner: string, num: number): Promise<string> {
+  private async getOrganizationProjectId(
+    owner: string,
+    num: number
+  ): Promise<string> {
     const {organization} = await this.#github(
       `query ($owner: String!, $number: Int!) {
         organization(login: $owner){
@@ -82,11 +85,42 @@ export class Assiger {
     return id
   }
 
-  async run(): Promise<void> {
-    const projectNodeId = await this.getProjectId(
-      this.config.owner,
-      this.config.projectId
+  private async getUserProjectId(login: string, num: number): Promise<string> {
+    const {user} = await this.#github(
+      `query ($owner: String!, $number: Int!) {
+        user(login: $login){
+          projectNext(number: $number) {
+            id
+          }
+        }
+    }`,
+      {
+        login,
+        number: num
+      }
     )
+
+    const id = user.projectNext.id
+    return id
+  }
+
+  async run(): Promise<void> {
+    let projectNodeId: string
+    try {
+      projectNodeId = await this.getOrganizationProjectId(
+        this.config.owner,
+        this.config.projectId
+      )
+      core.debug(
+        `Found organization project ${projectNodeId}, skipping user project lookup`
+      )
+    } catch (e) {
+      core.debug("Couldn't find organization project, looking for user project")
+      projectNodeId = await this.getUserProjectId(
+        this.config.owner,
+        this.config.projectId
+      )
+    }
 
     const itemId = await this.assignProject(projectNodeId, this.config.issueId)
     core.setOutput('project-item-id', itemId)
