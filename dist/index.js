@@ -85,7 +85,7 @@ class Assiger {
     async run() {
         const projectNodeId = await this.getProjectId(this.config.owner, this.config.projectId);
         const itemId = await this.assignProject(projectNodeId, this.config.issueId);
-        core.setOutput("item-id", itemId);
+        core.setOutput('project-item-id', itemId);
     }
 }
 exports.Assiger = Assiger;

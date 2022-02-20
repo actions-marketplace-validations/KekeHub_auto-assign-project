@@ -89,6 +89,6 @@ export class Assiger {
     )
 
     const itemId = await this.assignProject(projectNodeId, this.config.issueId)
-    core.setOutput('item-id', itemId)
+    core.setOutput('project-item-id', itemId)
   }
 }

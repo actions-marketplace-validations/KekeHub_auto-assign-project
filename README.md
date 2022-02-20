@@ -3,18 +3,100 @@
 [![GitHub Marketplace][MarketPlace]][MarketPlace-status]
 [![Mergify Status][mergify-status]][mergify]
 
-A GitHub Action that assiges a issue to a organization project (currently `beta`).
+A GitHub Action that assignes an issue or a pull requests to a organization project (currently `beta`).
 
 ## Usage
 
+This is the basic usage.
+
 ```yml
-      - name: Assign issue to organization project
-        uses: KekeHub/assign-org-project@v1
+on:
+  issues: [opened]
+  pull_request: [opened]
+
+steps:
+    - name: Assign issue to organization project
+      uses: KekeHub/assign-org-project@v1
+      with:
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
 ```
+
+Please see the following sections for details.
+
+## Authorization
+
+The default workflow GitHub token `${{ secrtes.GITHUB_TOKEN }}` doesn't have enough permissions so you need to create a GitHub PAT or a GitHub App.
+There are two ways to setup the client credentials.
+
+<details><summary>GitHub PAT</summary>
+
+### Using GitHub PAT
+
+Please create a PAT with the following permissions.
+
+* `repo`
+* `admin:org`
+
+Then pass it thought the `token` arguments.
+
+```yml
+steps:
+    - name: Assign issue to organization project
+      uses: KekeHub/assign-org-project@v1
+      with:
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
+```
+
+💡 Note that GitHub App described in the next sections has granular permissions and it's strongly recommended.
+
+</details>
+
+
+<details><summary>GitHub App</summary>
+
+### Using GitHub App
+
+Please create a GitHub App with the following permissions and install to the directory which will refer the issues or the pull requests.
+
+* Repository
+    * Issue: `Read only`
+* Organization:
+    * Project: `Read and write`
+
+
+Then pass it thought the GitHub app arguments.
+
+```yml
+steps:
+    - name: Assign issue to organization project
+      uses: KekeHub/assign-org-project@v1
+      with:
+        app-integration-id: ${{ secrets.MYBOT_INTEGRATION_ID }}
+        app-installation-id: ${{ secrets.MYBOT_INSTALLATION_ID }}
+        app-private-key: ${{ secrets.MYBOT_PRIVATE_KEY }}
+```
+
+If any of these arguments are missing, the `${{ secrets.GITHUB_TOKEN }}` will get used.
+
+</details>
 
 ## Inputs
 
+| NAME                  | DESCRIPTION                                                                            | TYPE     | REQUIRED | DEFAULT                                                                           |
+|-----------------------|----------------------------------------------------------------------------------------|----------|----------|-----------------------------------------------------------------------------------|
+| `app-installation-id` | ID of the GitHub App installation to your organization.                                | `number` | `false`  |                                                                                   |
+| `app-integration-id`  | ID of the GiHub App a.k.a App ID                                                       | `number` | `false`  |                                                                                   |
+| `app-private-key`     | Private key of the GitHub App.                                                         | `string` | `false`  |                                                                                   |
+| `issue-id`            | ID  of the issue.                                                                      | `string` | `true`   | `${{ github.event.issue.node_id }}` or `${{ github.event.pull_request.node_id }}` |
+| `owner`               | Organization. Note the user projects are not supported (yet) e.g. `KekeHub`            | `string` | `false`  | The workflows GitHub organization                                                 |
+| `token`               | A GitHub token. If GitHub App arguments are configured, this argument will be ignored. | `string` | `false`  | `${{ github.token }}`                                                             |
+| `project-id`          | ID of the project. e.g.) `1`                                                           | `number` | `true`   |                                                                                   |
+
 ## Outputs
+
+| NAME              | DESCRIPTION                                                                                                                  | TYPE     |
+|-------------------|------------------------------------------------------------------------------------------------------------------------------|----------|
+| `project-item-id` | ID of the item (issue or pull request) that was added to the project. Useful for later use if you want to update the fields. | `string` |
 
 ## License
 
