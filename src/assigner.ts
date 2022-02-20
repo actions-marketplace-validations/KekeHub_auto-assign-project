@@ -63,6 +63,15 @@ export class Assiger {
     return addProjectNextItem.projectNextItem.id
   }
 
+  private async getProjectId(owner: string, num: number): Promise<string> {
+    try {
+      return await this.getOrganizationProjectId(owner, num)
+    } catch (e) {
+      core.debug("Couldn't find organization project, looking for user project")
+      return await this.getUserProjectId(owner, num)
+    }
+  }
+
   private async getOrganizationProjectId(
     owner: string,
     num: number
@@ -105,22 +114,10 @@ export class Assiger {
   }
 
   async run(): Promise<void> {
-    let projectNodeId: string
-    try {
-      projectNodeId = await this.getOrganizationProjectId(
-        this.config.owner,
-        this.config.projectId
-      )
-      core.debug(
-        `Found organization project ${projectNodeId}, skipping user project lookup`
-      )
-    } catch (e) {
-      core.debug("Couldn't find organization project, looking for user project")
-      projectNodeId = await this.getUserProjectId(
-        this.config.owner,
-        this.config.projectId
-      )
-    }
+    const projectNodeId = await this.getProjectId(
+      this.config.owner,
+      this.config.projectId
+    )
 
     const itemId = await this.assignProject(projectNodeId, this.config.issueId)
     core.setOutput('project-item-id', itemId)
